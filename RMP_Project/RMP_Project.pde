@@ -28,5 +28,7 @@ void draw(){
 }
 
 void keyPressed(){
+  if(keyCode == ENTER){
     save("screenShot" + frameCount + ".tif");
+  }
 }
