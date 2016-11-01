@@ -2,6 +2,8 @@ import processing.video.*;
 import java.awt.*;
 
 PImage image;
+PImage readImage;
+
 Capture videoInput;
 void setup(){
   size(640,480);
@@ -29,6 +31,11 @@ void draw(){
 
 void keyPressed(){
   if(keyCode == ENTER){
-    save("screenShot" + frameCount + ".tif");
+    save("data/screenShotSaved.tif");
+    readImage();
   }
+}
+
+void readImage(){
+  readImage = loadImage ("screenShotSaved.tiff");
 }
