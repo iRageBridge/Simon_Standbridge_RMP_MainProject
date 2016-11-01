@@ -18,6 +18,8 @@ void setup(){
 }
 
 void draw(){  
+  
+  
   if(videoInput.available()){
     videoInput.read();
     //scale(-1,1);
@@ -27,7 +29,11 @@ void draw(){
   //fill(0,0,0);
   //ellipse(width/2,height/2,-200,-250);
   image(image,0,0);
+  textSize(22);
+  text("Put your face in the hole!", 10, 30);
+  text("Press Enter To Take Screenshot! (Saved to /data)", 10,height-50);
 }
+
 
 void keyPressed(){
   if(keyCode == ENTER){
