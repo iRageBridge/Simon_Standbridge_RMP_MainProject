@@ -3,6 +3,7 @@ import java.awt.*;
 
 PImage image;
 PImage readImage;
+PImage newImage;
 boolean showImage = true;
 
 Capture videoInput;
@@ -12,7 +13,7 @@ void setup(){
   videoInput = new Capture(this,640,480);
   videoInput.start();
   
-  background(0);
+  background(127);
   
   image = loadImage("processing.png");
 }
@@ -33,23 +34,23 @@ void draw(){
   
   else if(showImage != true){
     readImage = loadImage ("screenShotSaved.tif");
-    readImage.loadPixels();
-    //image(readImage,0,0);
+    newImage = createImage(readImage.width, readImage.height, ARGB);
     for(int x = 0; x < readImage.width; x++){
       for(int  y = 0; y < readImage.height; y++){
         int i = (x+(y * readImage.width));
         if(readImage.pixels[i] == color(0)){
-          readImage.pixels[i] = color(255,0);
+          newImage.pixels[i] = color(255,0);
         } 
         else {
-          readImage.pixels[i] = readImage.pixels[i];
+          newImage.pixels[i] = readImage.pixels[i];
         }
       }
     }
-    image(videoInput,0,0);
-    readImage.updatePixels();
-    image(readImage,0,0);
-    noLoop();
+    newImage.save("screenShotSaved.tif");
+    //image(videoInput,0,0);
+    //readImage.updatePixels();
+    image(newImage,0,0);
+    //noLoop();
   }
 }
 
