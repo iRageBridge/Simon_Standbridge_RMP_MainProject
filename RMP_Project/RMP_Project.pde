@@ -1,5 +1,7 @@
+
 import processing.video.*;
 import java.awt.*;
+import javax.swing.JOptionPane;
 
 PImage image;
 PImage readImage;
@@ -16,20 +18,17 @@ void setup(){
   background(127);
   
   image = loadImage("processing.png");
+  JOptionPane.showMessageDialog(null, "Put your face in the hole!");
 }
 
 void draw(){  
   if(videoInput.available()){
     videoInput.read();
-    //scale(-1,1);
     image(videoInput,0,0);
   }
   
   if(showImage == true){
     image(image,0,0);
-    textSize(22);
-    text("Put your face in the hole!", 10, 30);
-    text("Press Enter To Take Screenshot! (Saved to /data)", 10,height-50);
   }
   
   else if(showImage != true){
@@ -52,6 +51,7 @@ void draw(){
     image(newImage,0,0);
     //noLoop();
   }
+  
 }
 
 void keyPressed(){
