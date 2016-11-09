@@ -1,8 +1,11 @@
 
 import processing.video.*;
+import ddf.minim.*;
 import java.awt.*;
 import javax.swing.JOptionPane;
 
+Minim minim;
+AudioInput audioInput;
 PImage image;
 PImage readImage;
 PImage newImage;
@@ -15,6 +18,9 @@ void setup(){
   videoInput = new Capture(this,640,480);
   videoInput.start();
   
+  minim = new Minim(this);
+  audioInput = minim.getLineIn(Minim.STEREO,512);
+  
   background(127);
   
   image = loadImage("processing.png");
@@ -22,8 +28,11 @@ void setup(){
 }
 
 void draw(){  
+  float volume = audioInput.getGain();
+  println(volume);
   if(videoInput.available()){
     videoInput.read();
+    //scale(-1,1);
     image(videoInput,0,0);
   }
   
