@@ -10,10 +10,13 @@ PImage image;
 PImage readImage;
 PImage newImage;
 boolean showImage = true;
+boolean picTaken = false;
+boolean movePic = false;
 
 
 Capture videoInput;
 void setup(){
+  frameRate(48);
   size(640,480);
 
   videoInput = new Capture(this,640,480);
@@ -25,11 +28,17 @@ void setup(){
   background(127);
   
   image = loadImage("processing.png");
-  JOptionPane.showMessageDialog(null, "Put your face in the hole!");
+  JOptionPane.showMessageDialog(null, "Put your face in the hole, clap to take a picture, and clap again to exit!");
 }
 
-void draw(){  
-  println(audioInput.getVolume());
+void draw(){
+  
+  if(((audioInput.left.level()*100) > 50) && picTaken == false){
+    save("data/screenShotSaved.tif");
+    showImage = false;
+    picTaken = true; 
+  }
+  
   if(videoInput.available()){
     videoInput.read();
     //scale(-1,1);
@@ -55,17 +64,17 @@ void draw(){
       }
     }
     newImage.save("screenShotSaved.tif");
-    //image(videoInput,0,0);
-    //readImage.updatePixels();
+
     image(newImage,0,0);
-    //noLoop();
+    if(((audioInput.left.level()*100) > 50) && picTaken == true){
+      exit();
+    }
   }
-  
 }
 
-void keyPressed(){
+/*void keyPressed(){
   if(keyCode == ENTER){
     save("data/screenShotSaved.tif");
     showImage = false;
   }
-}
+}*/
