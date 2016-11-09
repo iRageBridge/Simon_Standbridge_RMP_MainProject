@@ -11,6 +11,7 @@ PImage readImage;
 PImage newImage;
 boolean showImage = true;
 
+
 Capture videoInput;
 void setup(){
   size(640,480);
@@ -19,7 +20,7 @@ void setup(){
   videoInput.start();
   
   minim = new Minim(this);
-  audioInput = minim.getLineIn(Minim.STEREO,512);
+  audioInput = minim.getLineIn();
   
   background(127);
   
@@ -28,8 +29,7 @@ void setup(){
 }
 
 void draw(){  
-  float volume = audioInput.getGain();
-  println(volume);
+  println(audioInput.getVolume());
   if(videoInput.available()){
     videoInput.read();
     //scale(-1,1);
