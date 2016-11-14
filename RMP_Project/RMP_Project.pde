@@ -1,68 +1,79 @@
 import processing.video.*;
+import ddf.minim.*;
 import java.awt.*;
+import javax.swing.JOptionPane;
 
-PImage backgroundImage;
+Minim minim;
+AudioInput audioInput;
+PImage image;
 PImage readImage;
 PImage newImage;
 boolean showImage = true;
-int xPos = -width/2;
+boolean picTaken = false;
+boolean movePic = false;
+
+
 Capture videoInput;
 void setup(){
+  frameRate(48);
   size(640,480);
 
   videoInput = new Capture(this,640,480);
   videoInput.start();
   
+  minim = new Minim(this);
+  audioInput = minim.getLineIn();
+  
   background(127);
   
-  backgroundImage = loadImage("processing.png");
+  image = loadImage("processing.png");
+  JOptionPane.showMessageDialog(null, "Put your face in the hole, clap to take a picture, and clap again to exit!");
 }
 
-void draw(){  
-  xPos+=10;
-  if(xPos >= width){
-    xPos= -width/2;
+void draw(){
+  
+  if(((audioInput.left.level()*100) > 50) && picTaken == false){
+    save("data/screenShotSaved.tif");
+    showImage = false;
+    picTaken = true; 
   }
-
+  
   if(videoInput.available()){
     videoInput.read();
+    //scale(-1,1);
     image(videoInput,0,0);
   }
   
   if(showImage == true){
-    image(backgroundImage,0,0);
-    textSize(22);
-    text("Put your face in the hole!", 10, 30);
-    text("Press Enter To Take Screenshot! (Saved to /data)", 10,height-50);
+    image(image,0,0);
   }
   
   else if(showImage != true){
-    image(videoInput,0,0);
-    readingAndAddingImage();
+    readImage = loadImage ("screenShotSaved.tif");
+    newImage = createImage(readImage.width, readImage.height, ARGB);
+    for(int x = 0; x < readImage.width; x++){
+      for(int  y = 0; y < readImage.height; y++){
+        int i = (x+(y * readImage.width));
+        if(readImage.pixels[i] == color(0)){
+          newImage.pixels[i] = color(255,0);
+        } 
+        else {
+          newImage.pixels[i] = readImage.pixels[i];
+        }
+      }
+    }
+    newImage.save("screenShotSaved.tif");
+
+    image(newImage,0,0);
+    if(((audioInput.left.level()*100) > 50) && picTaken == true){
+      exit();
+    }
   }
 }
 
-void keyPressed(){
+/*void keyPressed(){
   if(keyCode == ENTER){
     save("data/screenShotSaved.tif");
     showImage = false;
   }
-}
-
-void readingAndAddingImage(){
-  readImage = loadImage ("screenShotSaved.tif");
-  newImage = createImage(readImage.width, readImage.height, ARGB);
-  for(int x = 0; x < readImage.width; x++){
-    for(int  y = 0; y < readImage.height; y++){
-      int i = (x+(y * readImage.width));
-      if(readImage.pixels[i] == color(0)){
-        newImage.pixels[i] = color(255,0);
-      } 
-      else {
-        newImage.pixels[i] = readImage.pixels[i];
-      }
-    }
-  }
-  newImage.save("screenShotSaved.tif");
-  image(newImage,xPos,0);
-}
+}*/
