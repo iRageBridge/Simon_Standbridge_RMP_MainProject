@@ -10,9 +10,12 @@ PImage image;
 PImage readImage;
 PImage newImage;
 boolean showImage = true;
-boolean picTaken = false;
+boolean clapRegistered = false;
 boolean movePic = false;
-
+float rotation=0;
+float yPos=0;
+float transWidth=0;
+float transHeight=0;
 
 Capture videoInput;
 void setup(){
@@ -28,16 +31,21 @@ void setup(){
   background(127);
   
   image = loadImage("processing.png");
-  JOptionPane.showMessageDialog(null, "Put your face in the hole, clap to take a picture, and clap again to exit!");
+  JOptionPane.showMessageDialog(null, "Put your face in the hole, clap to take a picture!");
 }
 
 void draw(){
-  println(audioInput.left.level()*100);
-  if(((audioInput.left.level()*100) > 99) && picTaken == false){
-    save("data/screenShotSaved.tif");
-    showImage = false;
-    picTaken = true; 
+  if(clapRegistered == true){
+    rotation +=0.3;
+    yPos +=20;
+    transWidth = width/2;
+    transHeight = height/2;
   }
+  if(yPos >= height/2){
+        yPos= -height/2;
+  }
+  
+  //println(audioInput.left.level()*100);
   
   if(videoInput.available()){
     videoInput.read();
@@ -64,17 +72,20 @@ void draw(){
       }
     }
     newImage.save("screenShotSaved.tif");
-
-    image(newImage,0,0);
-    if(((audioInput.left.level()*100) > 50) && picTaken == true){
-      exit();
-    }
+    translate(transWidth,transHeight); 
+    rotate(rotation);
+    translate(-transWidth,-transHeight);
+    image(newImage,0,yPos); 
+  }
+  if(((audioInput.left.level()*100) > 70) && clapRegistered == false){
+    clapRegistered = true;
   }
 }
 
-/*void keyPressed(){
+void keyPressed(){
   if(keyCode == ENTER){
     save("data/screenShotSaved.tif");
     showImage = false;
   }
-}*/
+}
+  
