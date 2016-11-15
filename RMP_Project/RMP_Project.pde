@@ -32,8 +32,8 @@ void setup(){
 }
 
 void draw(){
-  
-  if(((audioInput.left.level()*100) > 50) && picTaken == false){
+  println(audioInput.left.level()*100);
+  if(((audioInput.left.level()*100) > 99) && picTaken == false){
     save("data/screenShotSaved.tif");
     showImage = false;
     picTaken = true; 
