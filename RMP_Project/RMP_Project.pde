@@ -83,7 +83,7 @@ void keyPressed(){
 }
 
 void shatterImage(int rows){
-  for(int j = 1; j <= rows+1; j++){
+  for(int j = 2; j <= rows+1; j++){
     readImage = loadImage ("screenShotSaved.tif");
     newImageRows = createImage(readImage.width, readImage.height/j, ARGB);
     for(int x = 0; x < readImage.width; x++){
@@ -103,25 +103,25 @@ void shatterImage(int rows){
     rotate(rotation);
     translate(-transWidth,-transHeight);
     image(newImageRows,xPos,yPos); 
-    
+  
     readImage = loadImage ("screenShotSaved.tif");
-    newImageRows = createImage(readImage.width, readImage.height/j, ARGB);
+    newImageBottom = createImage(readImage.width, readImage.height, ARGB);
     for(int x = 0; x < readImage.width; x++){
-      for(int  y = 0; y < readImage.height/j; y++){
+      for(int  y = readImage.height/2; y < readImage.height; y++){
         int i = (x+(y * readImage.width));
         if(readImage.pixels[i] == color(0)){
-          newImageRows.pixels[i] = color(255,0);
+          newImageBottom.pixels[i] = color(255,0);
         } 
         else {
-          newImageRows.pixels[i] = readImage.pixels[i];
+          newImageBottom.pixels[i] = readImage.pixels[i];
         }
       }
-    }    
-     
-    newImageRows.save("screenShotSaved.tif");
+    }
+    
+    newImageBottom.save("screenShotSaved.tif");
     translate(transWidth,transHeight); 
     rotate(rotation);
     translate(-transWidth,-transHeight);
-    image(newImageRows,xPos,yPos); 
-  } 
+    image(newImageBottom,xPos,yPos);
+  }
 }
