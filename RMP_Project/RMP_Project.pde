@@ -1,4 +1,3 @@
-
 import processing.video.*;
 import ddf.minim.*;
 import java.awt.*;
@@ -6,16 +5,20 @@ import javax.swing.JOptionPane;
 
 Minim minim;
 AudioInput audioInput;
+
 PImage image;
 PImage readImage;
-PImage newImage;
+PImage newImageBottom;
+PImage newImageRows;
 boolean showImage = true;
 boolean clapRegistered = false;
 boolean movePic = false;
 float rotation=0;
 float yPos=0;
+float xPos=0;
 float transWidth=0;
 float transHeight=0;
+float imageScale=0;
 
 Capture videoInput;
 void setup(){
@@ -36,20 +39,26 @@ void setup(){
 
 void draw(){
   if(clapRegistered == true){
+    imageScale = imageScale % 100;
     rotation +=0.3;
-    yPos +=20;
+    xPos+=10;
+    yPos +=10;
     transWidth = width/2;
     transHeight = height/2;
   }
+  
   if(yPos >= height/2){
-        yPos= -height/2;
+    yPos= -height/2;
+    rotation -=.6;
   }
   
-  //println(audioInput.left.level()*100);
-  
+  if(xPos >= width/2){
+    xPos= -width/2;
+    rotation -=.6;
+  }
+
   if(videoInput.available()){
     videoInput.read();
-    //scale(-1,1);
     image(videoInput,0,0);
   }
   
@@ -58,26 +67,10 @@ void draw(){
   }
   
   else if(showImage != true){
-    readImage = loadImage ("screenShotSaved.tif");
-    newImage = createImage(readImage.width, readImage.height, ARGB);
-    for(int x = 0; x < readImage.width; x++){
-      for(int  y = 0; y < readImage.height; y++){
-        int i = (x+(y * readImage.width));
-        if(readImage.pixels[i] == color(0)){
-          newImage.pixels[i] = color(255,0);
-        } 
-        else {
-          newImage.pixels[i] = readImage.pixels[i];
-        }
-      }
-    }
-    newImage.save("screenShotSaved.tif");
-    translate(transWidth,transHeight); 
-    rotate(rotation);
-    translate(-transWidth,-transHeight);
-    image(newImage,0,yPos); 
+    shatterImage(4);
   }
-  if(((audioInput.left.level()*100) > 70) && clapRegistered == false){
+  
+  if(((audioInput.left.level()*100) > 99) && clapRegistered == false){
     clapRegistered = true;
   }
 }
@@ -88,4 +81,47 @@ void keyPressed(){
     showImage = false;
   }
 }
-  
+
+void shatterImage(int rows){
+  for(int j = 1; j <= rows+1; j++){
+    readImage = loadImage ("screenShotSaved.tif");
+    newImageRows = createImage(readImage.width, readImage.height/j, ARGB);
+    for(int x = 0; x < readImage.width; x++){
+      for(int  y = 0; y < readImage.height/j; y++){
+        int i = (x+(y * readImage.width));
+        if(readImage.pixels[i] == color(0)){
+          newImageRows.pixels[i] = color(255,0);
+        } 
+        else {
+          newImageRows.pixels[i] = readImage.pixels[i];
+        }
+      }
+    }
+    
+    newImageRows.save("screenShotSaved.tif");
+    translate(transWidth,transHeight); 
+    rotate(rotation);
+    translate(-transWidth,-transHeight);
+    image(newImageRows,xPos,yPos); 
+    
+    readImage = loadImage ("screenShotSaved.tif");
+    newImageRows = createImage(readImage.width, readImage.height/j, ARGB);
+    for(int x = 0; x < readImage.width; x++){
+      for(int  y = 0; y < readImage.height/j; y++){
+        int i = (x+(y * readImage.width));
+        if(readImage.pixels[i] == color(0)){
+          newImageRows.pixels[i] = color(255,0);
+        } 
+        else {
+          newImageRows.pixels[i] = readImage.pixels[i];
+        }
+      }
+    }    
+     
+    newImageRows.save("screenShotSaved.tif");
+    translate(transWidth,transHeight); 
+    rotate(rotation);
+    translate(-transWidth,-transHeight);
+    image(newImageRows,xPos,yPos); 
+  } 
+}
