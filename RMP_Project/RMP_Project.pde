@@ -10,19 +10,23 @@ color trackColor;
 
 int closestX = 0;
 int closestY = 0;
+
 PImage image;
 PImage readImage;
 PImage newImage;
 PImage newImageRows;
+
 boolean showImage = true;
 boolean clapRegistered = false;
 boolean movePic = false;
+
 float rotation=0;
 float yPos=0;
 float xPos=0;
 float transWidth=0;
 float transHeight=0;
 float imageScale=0;
+
 XML xmlDialogue;
 
 Capture videoInput;
@@ -32,8 +36,7 @@ void setup(){
   XML[]dialogues = xmlDialogue.getChildren("box");
   for(int i = 0; i < dialogues.length; i++){
     String dialogueIntro = dialogues[i].getString("text");
-    JOptionPane.showMessageDialog(null,dialogues);
-    print(dialogueIntro);
+    JOptionPane.showMessageDialog(null,dialogueIntro);
   }
   
   frameRate(48);
@@ -53,34 +56,18 @@ void setup(){
 }
 
 void draw(){
-  
   if(clapRegistered == true){
     imageScale = imageScale % 100;
     rotation +=0.3;
-    //xPos+=10;
-    //yPos +=10;
     transWidth = 0;
     transHeight = 0;
   }
   
-  
-  /*if(yPos >= height/2){
-    yPos= -height/2;
-    rotation -=.6;
-  }
-  
-  if(xPos >= width/2){
-    xPos= -width/2;
-    rotation -=.6;
-  }*/
-
   if(videoInput.available()){
     videoInput.read();
-    
     videoInput.loadPixels();
     image(videoInput,0,0);
   }
-  
   
   if(showImage == true){
     image(image,0,0);
@@ -91,14 +78,9 @@ void draw(){
   }
   
   if(((audioInput.left.level()*100) > 99) && clapRegistered == false){
-    clapRegistered = true;
-  }
-}
-
-void keyPressed(){
-  if(keyCode == ENTER && showImage == true){
     save("data/screenShotSaved.tif");
     showImage = false;
+    clapRegistered = true;
   }
 }
 
@@ -107,10 +89,7 @@ void mousePressed(){
   trackColor = videoInput.pixels[loc];
 }
 
-
-  
-  void trackGreen(){
-
+void trackGreen(){
   float worldRecord = 10;
   
   for (int x = 0; x < videoInput.width; x ++ ) {
@@ -123,9 +102,7 @@ void mousePressed(){
       float r2 = red(trackColor);
       float g2 = green(trackColor);
       float b2 = blue(trackColor);
-
       float d = dist(r1, g1, b1, r2, g2, b2);
-
       if (d < worldRecord) {
         worldRecord = d;
         closestX = x;
@@ -136,60 +113,31 @@ void mousePressed(){
 
 
   if (worldRecord < 10) { 
-    /*readImage = loadImage ("screenShotSaved.tif");
-    newImage = createImage(readImage.width, readImage.height, ARGB);
-    for(int x = 0; x < readImage.width; x++){
-      for(int  y = 0; y < readImage.height; y++){
-        int i = (x+(y * readImage.width));
-        if(readImage.pixels[i] == color(0)){
-          newImage.pixels[i] = color(255,0);
-        } 
-        else {
-          newImage.pixels[i] = readImage.pixels[i];
-        }
-      }
-    }*/
-    
-    //newImage.save("screenShotSaved.tif");
-    //translate(transWidth,transHeight); 
-    //rotate(rotation);
-    //translate(-transWidth,-transHeight);
-    //newImage.resize(((int)audioInput.left.level()*100),(int)audioInput.left.level()*100);
-    //image(newImage,closestX-width/2,closestY-width/2);
     xPos = closestX-300;
     yPos = closestY-300;
-    //shatterImage();
-    //image(newImage,xPos,yPos);
     fill(trackColor);
     strokeWeight(4.0);
     stroke(0);
     ellipse(closestX, closestY, 16, 16);
   }
- }
+}
  
- void shatterImage(){
-    readImage = loadImage ("screenShotSaved.tif");
-    newImage = createImage(readImage.width, readImage.height, ARGB);
-    for(int x = 0; x < readImage.width; x++){
-      for(int  y = 0; y < readImage.height; y++){
-        int i = (x+(y * readImage.width));
-        if(readImage.pixels[i] == color(0)){
-          newImage.pixels[i] = color(255,0);
-        } 
-        else {
-          newImage.pixels[i] = readImage.pixels[i];
-        }
+void shatterImage(){
+  readImage = loadImage ("screenShotSaved.tif");
+  newImage = createImage(readImage.width, readImage.height, ARGB);
+  for(int x = 0; x < readImage.width; x++){
+    for(int  y = 0; y < readImage.height; y++){
+      int i = (x+(y * readImage.width));
+      if(readImage.pixels[i] == color(0)){
+        newImage.pixels[i] = color(255,0);
+      } 
+      else {
+        newImage.pixels[i] = readImage.pixels[i];
       }
     }
-    
-    newImage.save("screenShotSaved.tif");
-    //translate(transWidth,transHeight); 
-    //rotate(rotation);
-    //translate(-transWidth,-transHeight);
-    //newImage.resize(((int)audioInput.left.level()*100),(int)audioInput.left.level()*100);
-    image(newImage,closestX-300,closestY-300);
-    trackGreen();
   }
-    //
-  //}
-//}
+    
+  newImage.save("screenShotSaved.tif");
+  image(newImage,closestX-300,closestY-300);
+  trackGreen();
+}
