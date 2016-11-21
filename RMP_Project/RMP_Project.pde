@@ -6,10 +6,10 @@ import javax.swing.JOptionPane;
 Minim minim;
 AudioInput audioInput;
 
-color trackColor;
+color track;
 
-int closestX = 0;
-int closestY = 0;
+int newX = 0;
+int newY = 0;
 
 PImage image;
 PImage readImage;
@@ -52,17 +52,11 @@ void setup(){
   
   image = loadImage("processing.png");
   
-  trackColor = color(255,0,0);
+  track = color(255,0,0);
 }
 
-void draw(){
-  if(clapRegistered == true){
-    imageScale = imageScale % 100;
-    rotation +=0.3;
-    transWidth = 0;
-    transHeight = 0;
-  }
-  
+void draw(){  
+  print (audioInput.left.level()*100);
   if(videoInput.available()){
     videoInput.read();
     videoInput.loadPixels();
@@ -74,7 +68,7 @@ void draw(){
   }
   
   else if(showImage != true){
-    shatterImage();
+    takePicture();
   }
   
   if(((audioInput.left.level()*100) > 99) && clapRegistered == false){
@@ -86,43 +80,42 @@ void draw(){
 
 void mousePressed(){
   int loc = mouseX + mouseY*videoInput.width;
-  trackColor = videoInput.pixels[loc];
+  track = videoInput.pixels[loc];
 }
 
 void trackGreen(){
-  float worldRecord = 10;
+  float colourGap = 10;
   
   for (int x = 0; x < videoInput.width; x ++ ) {
     for (int y = 0; y < videoInput.height; y ++ ) {
       int loc = x + y*videoInput.width;
-      color currentColor = videoInput.pixels[loc];
-      float r1 = red(currentColor);
-      float g1 = green(currentColor);
-      float b1 = blue(currentColor);
-      float r2 = red(trackColor);
-      float g2 = green(trackColor);
-      float b2 = blue(trackColor);
+      color current = videoInput.pixels[loc];
+      float r1 = red(current);
+      float g1 = green(current);
+      float b1 = blue(current);
+      float r2 = red(track);
+      float g2 = green(track);
+      float b2 = blue(track);
       float d = dist(r1, g1, b1, r2, g2, b2);
-      if (d < worldRecord) {
-        worldRecord = d;
-        closestX = x;
-        closestY = y;
+      if (d < colourGap) {
+        colourGap = d;
+        newX = x;
+        newY = y;
       }
     }
   }
 
-
-  if (worldRecord < 10) { 
-    xPos = closestX-300;
-    yPos = closestY-300;
-    fill(trackColor);
+  if (colourGap < 10) { 
+    xPos = newX-300;
+    yPos = newY-300;
+    fill(track);
     strokeWeight(4.0);
     stroke(0);
-    ellipse(closestX, closestY, 16, 16);
+    ellipse(newX, newY, 16, 16);
   }
 }
  
-void shatterImage(){
+void takePicture(){
   readImage = loadImage ("screenShotSaved.tif");
   newImage = createImage(readImage.width, readImage.height, ARGB);
   for(int x = 0; x < readImage.width; x++){
@@ -138,6 +131,6 @@ void shatterImage(){
   }
     
   newImage.save("screenShotSaved.tif");
-  image(newImage,closestX-300,closestY-300);
+  image(newImage,newX-300,newY-300);
   trackGreen();
 }
