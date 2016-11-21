@@ -23,10 +23,18 @@ float xPos=0;
 float transWidth=0;
 float transHeight=0;
 float imageScale=0;
+XML xmlDialogue;
 
 Capture videoInput;
 
 void setup(){
+  xmlDialogue = loadXML ("dialogue.xml");
+  XML[]dialogues = xmlDialogue.getChildren("box");
+  for(int i = 0; i < dialogues.length; i++){
+    String dialogueIntro = dialogues[i].getString("text");
+    JOptionPane.showMessageDialog(null,dialogues);
+    print(dialogueIntro);
+  }
   
   frameRate(48);
   size(640,480);
@@ -40,7 +48,7 @@ void setup(){
   background(127);
   
   image = loadImage("processing.png");
-  JOptionPane.showMessageDialog(null, "Put your face in the hole, clap to take a picture!");
+  
   trackColor = color(255,0,0);
 }
 

@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<dialogues>
+	<box id="runTime" text="Put Your Face In The Hole..."></box>
+	<box id="runTimeTwo" text="Clap To Take Picture..."></box>
+	<box id="trackInstructions" text="Click something red, the picture will follow it!"></box>
+</dialogues>
