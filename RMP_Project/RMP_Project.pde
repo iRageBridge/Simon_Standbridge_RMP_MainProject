@@ -152,9 +152,10 @@ void mousePressed(){
     yPos = closestY-300;
     //shatterImage();
     //image(newImage,xPos,yPos);
-    //fill(trackColor);
-    //strokeWeight(4.0);
-    //stroke(0);
+    fill(trackColor);
+    strokeWeight(4.0);
+    stroke(0);
+    ellipse(closestX, closestY, 16, 16);
   }
  }
  
@@ -178,9 +179,9 @@ void mousePressed(){
     //rotate(rotation);
     //translate(-transWidth,-transHeight);
     //newImage.resize(((int)audioInput.left.level()*100),(int)audioInput.left.level()*100);
-    image(newImage,closestX,closestY);
+    image(newImage,closestX-300,closestY-300);
     trackGreen();
   }
-    //ellipse(closestX, closestY, 16, 16);
+    //
   //}
 //}
