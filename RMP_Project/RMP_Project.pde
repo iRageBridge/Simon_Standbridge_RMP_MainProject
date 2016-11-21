@@ -8,6 +8,8 @@ AudioInput audioInput;
 
 color trackColor;
 
+int closestX = 0;
+int closestY = 0;
 PImage image;
 PImage readImage;
 PImage newImage;
@@ -86,7 +88,7 @@ void draw(){
 }
 
 void keyPressed(){
-  if(keyCode == ENTER){
+  if(keyCode == ENTER && showImage == true){
     save("data/screenShotSaved.tif");
     showImage = false;
   }
@@ -97,36 +99,11 @@ void mousePressed(){
   trackColor = videoInput.pixels[loc];
 }
 
-void shatterImage(){
-    readImage = loadImage ("screenShotSaved.tif");
-    newImage = createImage(readImage.width, readImage.height, ARGB);
-    for(int x = 0; x < readImage.width; x++){
-      for(int  y = 0; y < readImage.height; y++){
-        int i = (x+(y * readImage.width));
-        if(readImage.pixels[i] == color(0)){
-          newImage.pixels[i] = color(255,0);
-        } 
-        else {
-          newImage.pixels[i] = readImage.pixels[i];
-        }
-      }
-    }
-    
-    newImage.save("screenShotSaved.tif");
-    //translate(transWidth,transHeight); 
-    //rotate(rotation);
-    //translate(-transWidth,-transHeight);
-    //newImage.resize(((int)audioInput.left.level()*100),(int)audioInput.left.level()*100);
-    image(newImage,xPos,yPos);
-    trackGreen();
-  }
+
   
   void trackGreen(){
 
-  float worldRecord = 20; 
-
-  int closestX = 0;
-  int closestY = 0;
+  float worldRecord = 10;
   
   for (int x = 0; x < videoInput.width; x ++ ) {
     for (int y = 0; y < videoInput.height; y ++ ) {
@@ -170,7 +147,9 @@ void shatterImage(){
     //rotate(rotation);
     //translate(-transWidth,-transHeight);
     //newImage.resize(((int)audioInput.left.level()*100),(int)audioInput.left.level()*100);
-    image(newImage,closestX,closestY);
+    //image(newImage,closestX-width/2,closestY-width/2);
+    xPos = closestX-300;
+    yPos = closestY-300;
     //shatterImage();
     //image(newImage,xPos,yPos);
     //fill(trackColor);
@@ -178,6 +157,30 @@ void shatterImage(){
     //stroke(0);
   }
  }
+ 
+ void shatterImage(){
+    readImage = loadImage ("screenShotSaved.tif");
+    newImage = createImage(readImage.width, readImage.height, ARGB);
+    for(int x = 0; x < readImage.width; x++){
+      for(int  y = 0; y < readImage.height; y++){
+        int i = (x+(y * readImage.width));
+        if(readImage.pixels[i] == color(0)){
+          newImage.pixels[i] = color(255,0);
+        } 
+        else {
+          newImage.pixels[i] = readImage.pixels[i];
+        }
+      }
+    }
+    
+    newImage.save("screenShotSaved.tif");
+    //translate(transWidth,transHeight); 
+    //rotate(rotation);
+    //translate(-transWidth,-transHeight);
+    //newImage.resize(((int)audioInput.left.level()*100),(int)audioInput.left.level()*100);
+    image(newImage,closestX,closestY);
+    trackGreen();
+  }
     //ellipse(closestX, closestY, 16, 16);
   //}
 //}
