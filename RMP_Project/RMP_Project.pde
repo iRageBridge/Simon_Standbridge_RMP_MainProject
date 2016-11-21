@@ -6,9 +6,11 @@ import javax.swing.JOptionPane;
 Minim minim;
 AudioInput audioInput;
 
+color trackColor;
+
 PImage image;
 PImage readImage;
-PImage newImageBottom;
+PImage newImage;
 PImage newImageRows;
 boolean showImage = true;
 boolean clapRegistered = false;
@@ -21,7 +23,9 @@ float transHeight=0;
 float imageScale=0;
 
 Capture videoInput;
+
 void setup(){
+  
   frameRate(48);
   size(640,480);
 
@@ -35,19 +39,22 @@ void setup(){
   
   image = loadImage("processing.png");
   JOptionPane.showMessageDialog(null, "Put your face in the hole, clap to take a picture!");
+  trackColor = color(255,0,0);
 }
 
 void draw(){
+  
   if(clapRegistered == true){
     imageScale = imageScale % 100;
     rotation +=0.3;
-    xPos+=10;
-    yPos +=10;
-    transWidth = width/2;
-    transHeight = height/2;
+    //xPos+=10;
+    //yPos +=10;
+    transWidth = 0;
+    transHeight = 0;
   }
   
-  if(yPos >= height/2){
+  
+  /*if(yPos >= height/2){
     yPos= -height/2;
     rotation -=.6;
   }
@@ -55,19 +62,22 @@ void draw(){
   if(xPos >= width/2){
     xPos= -width/2;
     rotation -=.6;
-  }
+  }*/
 
   if(videoInput.available()){
     videoInput.read();
+    
+    videoInput.loadPixels();
     image(videoInput,0,0);
   }
+  
   
   if(showImage == true){
     image(image,0,0);
   }
   
   else if(showImage != true){
-    shatterImage(4);
+    shatterImage();
   }
   
   if(((audioInput.left.level()*100) > 99) && clapRegistered == false){
@@ -82,46 +92,92 @@ void keyPressed(){
   }
 }
 
-void shatterImage(int rows){
-  for(int j = 2; j <= rows+1; j++){
-    readImage = loadImage ("screenShotSaved.tif");
-    newImageRows = createImage(readImage.width, readImage.height/j, ARGB);
-    for(int x = 0; x < readImage.width; x++){
-      for(int  y = 0; y < readImage.height/j; y++){
-        int i = (x+(y * readImage.width));
-        if(readImage.pixels[i] == color(0)){
-          newImageRows.pixels[i] = color(255,0);
-        } 
-        else {
-          newImageRows.pixels[i] = readImage.pixels[i];
-        }
-      }
-    }
-    
-    newImageRows.save("screenShotSaved.tif");
-    translate(transWidth,transHeight); 
-    rotate(rotation);
-    translate(-transWidth,-transHeight);
-    image(newImageRows,xPos,yPos); 
-  
-    readImage = loadImage ("screenShotSaved.tif");
-    newImageBottom = createImage(readImage.width, readImage.height, ARGB);
-    for(int x = 0; x < readImage.width; x++){
-      for(int  y = readImage.height/2; y < readImage.height; y++){
-        int i = (x+(y * readImage.width));
-        if(readImage.pixels[i] == color(0)){
-          newImageBottom.pixels[i] = color(255,0);
-        } 
-        else {
-          newImageBottom.pixels[i] = readImage.pixels[i];
-        }
-      }
-    }
-    
-    newImageBottom.save("screenShotSaved.tif");
-    translate(transWidth,transHeight); 
-    rotate(rotation);
-    translate(-transWidth,-transHeight);
-    image(newImageBottom,xPos,yPos);
-  }
+void mousePressed(){
+  int loc = mouseX + mouseY*videoInput.width;
+  trackColor = videoInput.pixels[loc];
 }
+
+void shatterImage(){
+    readImage = loadImage ("screenShotSaved.tif");
+    newImage = createImage(readImage.width, readImage.height, ARGB);
+    for(int x = 0; x < readImage.width; x++){
+      for(int  y = 0; y < readImage.height; y++){
+        int i = (x+(y * readImage.width));
+        if(readImage.pixels[i] == color(0)){
+          newImage.pixels[i] = color(255,0);
+        } 
+        else {
+          newImage.pixels[i] = readImage.pixels[i];
+        }
+      }
+    }
+    
+    newImage.save("screenShotSaved.tif");
+    //translate(transWidth,transHeight); 
+    //rotate(rotation);
+    //translate(-transWidth,-transHeight);
+    //newImage.resize(((int)audioInput.left.level()*100),(int)audioInput.left.level()*100);
+    image(newImage,xPos,yPos);
+    trackGreen();
+  }
+  
+  void trackGreen(){
+
+  float worldRecord = 20; 
+
+  int closestX = 0;
+  int closestY = 0;
+  
+  for (int x = 0; x < videoInput.width; x ++ ) {
+    for (int y = 0; y < videoInput.height; y ++ ) {
+      int loc = x + y*videoInput.width;
+      color currentColor = videoInput.pixels[loc];
+      float r1 = red(currentColor);
+      float g1 = green(currentColor);
+      float b1 = blue(currentColor);
+      float r2 = red(trackColor);
+      float g2 = green(trackColor);
+      float b2 = blue(trackColor);
+
+      float d = dist(r1, g1, b1, r2, g2, b2);
+
+      if (d < worldRecord) {
+        worldRecord = d;
+        closestX = x;
+        closestY = y;
+      }
+    }
+  }
+
+
+  if (worldRecord < 10) { 
+    /*readImage = loadImage ("screenShotSaved.tif");
+    newImage = createImage(readImage.width, readImage.height, ARGB);
+    for(int x = 0; x < readImage.width; x++){
+      for(int  y = 0; y < readImage.height; y++){
+        int i = (x+(y * readImage.width));
+        if(readImage.pixels[i] == color(0)){
+          newImage.pixels[i] = color(255,0);
+        } 
+        else {
+          newImage.pixels[i] = readImage.pixels[i];
+        }
+      }
+    }*/
+    
+    //newImage.save("screenShotSaved.tif");
+    //translate(transWidth,transHeight); 
+    //rotate(rotation);
+    //translate(-transWidth,-transHeight);
+    //newImage.resize(((int)audioInput.left.level()*100),(int)audioInput.left.level()*100);
+    image(newImage,closestX,closestY);
+    //shatterImage();
+    //image(newImage,xPos,yPos);
+    //fill(trackColor);
+    //strokeWeight(4.0);
+    //stroke(0);
+  }
+ }
+    //ellipse(closestX, closestY, 16, 16);
+  //}
+//}
