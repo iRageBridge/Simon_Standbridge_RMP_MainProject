@@ -56,11 +56,14 @@ void setup(){
 }
 
 void draw(){  
-  print (audioInput.left.level()*100);
+  println(audioInput.right.level()*100);
   if(videoInput.available()){
     videoInput.read();
     videoInput.loadPixels();
-    image(videoInput,0,0);
+    pushMatrix();
+    scale(-1,1);
+    image(videoInput,-width,0);
+    popMatrix();
   }
   
   if(showImage == true){
@@ -71,7 +74,7 @@ void draw(){
     takePicture();
   }
   
-  if(((audioInput.left.level()*100) > 99) && clapRegistered == false){
+  if(((audioInput.right.level()*100) > 99) && clapRegistered == false){
     save("data/screenShotSaved.tif");
     showImage = false;
     clapRegistered = true;
@@ -79,6 +82,8 @@ void draw(){
 }
 
 void mousePressed(){
+  newX = newX-300;
+  newY = newY-300;
   int loc = mouseX + mouseY*videoInput.width;
   track = videoInput.pixels[loc];
 }
@@ -88,7 +93,8 @@ void trackGreen(){
   
   for (int x = 0; x < videoInput.width; x ++ ) {
     for (int y = 0; y < videoInput.height; y ++ ) {
-      int loc = x + y*videoInput.width;
+      //int loc = x + y*videoInput.width;
+      int loc = (videoInput.width-x-1+(y*readImage.width));
       color current = videoInput.pixels[loc];
       float r1 = red(current);
       float g1 = green(current);
@@ -106,12 +112,12 @@ void trackGreen(){
   }
 
   if (colourGap < 10) { 
-    xPos = newX-300;
-    yPos = newY-300;
-    fill(track);
-    strokeWeight(4.0);
-    stroke(0);
-    ellipse(newX, newY, 16, 16);
+    xPos = newX;
+    yPos = newY;
+    //fill(track);
+    //strokeWeight(4.0);
+    //stroke(0);
+    //ellipse(newX, newY, 16, 16);
   }
 }
  
@@ -120,7 +126,8 @@ void takePicture(){
   newImage = createImage(readImage.width, readImage.height, ARGB);
   for(int x = 0; x < readImage.width; x++){
     for(int  y = 0; y < readImage.height; y++){
-      int i = (x+(y * readImage.width));
+      //int i = (x+(y * readImage.width));
+      int i = (videoInput.width-x-1+(y*readImage.width));
       if(readImage.pixels[i] == color(0)){
         newImage.pixels[i] = color(255,0);
       } 
