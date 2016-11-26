@@ -1,3 +1,5 @@
+//Importing Libraries
+
 import processing.video.*;
 import ddf.minim.*;
 import java.awt.*;
@@ -5,6 +7,8 @@ import javax.swing.JOptionPane;
 
 Minim minim;
 AudioInput audioInput;
+
+//Declaring Variables
 
 color track;
 
@@ -32,6 +36,7 @@ XML xmlDialogue;
 Capture videoInput;
 
 void setup(){
+  //Loading text fom XML file and displaying in dialog box
   xmlDialogue = loadXML ("dialogue.xml");
   XML[]dialogues = xmlDialogue.getChildren("box");
   for(int i = 0; i < dialogues.length; i++){
@@ -45,18 +50,21 @@ void setup(){
   videoInput = new Capture(this,640,480);
   videoInput.start();
   
+  //Reading sound input
+  
   minim = new Minim(this);
   audioInput = minim.getLineIn();
   
   background(127);
   
+  //Loading background image (black image with oval hole)
+  
   image = loadImage("processing.png");
   
-  track = color(255,0,0);
 }
 
 void draw(){  
-  println(audioInput.right.level()*100);
+  //Reading video input, and flipping it on the x axis to avoid reversed video
   if(videoInput.available()){
     videoInput.read();
     videoInput.loadPixels();
@@ -74,6 +82,7 @@ void draw(){
     takePicture();
   }
   
+  //Checking to see if audio level is over 99, clapRegistered it set to true after first clap to avoid double claps
   if(((audioInput.right.level()*100) > 99) && clapRegistered == false){
     save("data/screenShotSaved.tif");
     showImage = false;
@@ -81,6 +90,7 @@ void draw(){
   }
 }
 
+//Changes position of the image(-300 because it was set to the top left) and setting the colour we are tracking to the colour of the pixel we last clicked on
 void mousePressed(){
   newX = newX-300;
   newY = newY-300;
@@ -89,11 +99,12 @@ void mousePressed(){
 }
 
 void trackGreen(){
+  //Colour gap is the range outside selected colour we are allowed to track
   float colourGap = 10;
   
+  //Checks every single pixel seqentually, gets the r,g and b values of them, seeing if they are within the acceptable range of the selected colour, and if they are setting the x and y of the image to the location of that pixel
   for (int x = 0; x < videoInput.width; x ++ ) {
     for (int y = 0; y < videoInput.height; y ++ ) {
-      //int loc = x + y*videoInput.width;
       int loc = (videoInput.width-x-1+(y*readImage.width));
       color current = videoInput.pixels[loc];
       float r1 = red(current);
@@ -110,23 +121,22 @@ void trackGreen(){
       }
     }
   }
-
+  
+  
   if (colourGap < 10) { 
     xPos = newX;
     yPos = newY;
-    //fill(track);
-    //strokeWeight(4.0);
-    //stroke(0);
-    //ellipse(newX, newY, 16, 16);
   }
 }
  
+//Checking every pixel in the image, checking to see if it us pure black, setting it to transparent if it is
+//then taking the remaining pixels of the image (the oval in the centre), saving it as an image in data, and
+//reading it back in over the video.
 void takePicture(){
   readImage = loadImage ("screenShotSaved.tif");
   newImage = createImage(readImage.width, readImage.height, ARGB);
   for(int x = 0; x < readImage.width; x++){
     for(int  y = 0; y < readImage.height; y++){
-      //int i = (x+(y * readImage.width));
       int i = (videoInput.width-x-1+(y*readImage.width));
       if(readImage.pixels[i] == color(0)){
         newImage.pixels[i] = color(255,0);
@@ -136,7 +146,8 @@ void takePicture(){
       }
     }
   }
-    
+  
+  //Reads the screenshot from data and places it in the middle of the screen
   newImage.save("screenShotSaved.tif");
   image(newImage,newX-300,newY-300);
   trackGreen();
