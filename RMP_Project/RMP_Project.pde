@@ -1,5 +1,4 @@
 //Importing Libraries
-
 import processing.video.*;
 import ddf.minim.*;
 import java.awt.*;
@@ -7,7 +6,6 @@ import javax.swing.JOptionPane;
 
 Minim minim;
 AudioInput audioInput;
-
 //Declaring Variables
 
 color track;
@@ -49,18 +47,15 @@ void setup(){
 
   videoInput = new Capture(this,640,480);
   videoInput.start();
-  
   //Reading sound input
   
   minim = new Minim(this);
   audioInput = minim.getLineIn();
   
   background(127);
-  
   //Loading background image (black image with oval hole)
   
   image = loadImage("processing.png");
-  
 }
 
 void draw(){  
@@ -122,7 +117,6 @@ void trackGreen(){
     }
   }
   
-  
   if (colourGap < 10) { 
     xPos = newX;
     yPos = newY;
@@ -146,8 +140,8 @@ void takePicture(){
       }
     }
   }
-  
   //Reads the screenshot from data and places it in the middle of the screen
+  
   newImage.save("screenShotSaved.tif");
   image(newImage,newX-300,newY-300);
   trackGreen();
