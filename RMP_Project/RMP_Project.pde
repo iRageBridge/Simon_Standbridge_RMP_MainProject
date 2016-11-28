@@ -4,36 +4,43 @@ import ddf.minim.*;
 import java.awt.*;
 import javax.swing.JOptionPane;
 
-Minim minim;
-AudioInput audioInput;
 //Declaring Variables
-
 color track;
-
-int newX = 0;
-int newY = 0;
 
 PImage image;
 PImage readImage;
 PImage newImage;
-PImage newImageRows;
 
-boolean showImage = true;
-boolean clapRegistered = false;
-boolean movePic = false;
+boolean showImage;
+boolean clapRegistered;
 
-float rotation=0;
-float yPos=0;
-float xPos=0;
-float transWidth=0;
-float transHeight=0;
-float imageScale=0;
+float yPos;
+float xPos;
+int newX;
+int newY;
+double randX;
+double randY;
 
 XML xmlDialogue;
 
+AudioInput audioInput;
+Minim minim;
 Capture videoInput;
 
 void setup(){
+  
+  //Assigning values
+  newX = 0;
+  newY = 0;
+  
+  
+  showImage = true;
+  clapRegistered = false;
+  
+  yPos=0;
+  xPos=0;
+  
+  XML xmlDialogue;
   //Loading text fom XML file and displaying in dialog box
   xmlDialogue = loadXML ("dialogue.xml");
   XML[]dialogues = xmlDialogue.getChildren("box");
@@ -53,10 +60,15 @@ void setup(){
   //Loading background image (black image with oval hole)
   
   image = loadImage("processing.png");
+  
+  
+  
 }
 
-void draw(){  
+void draw(){ 
+  
   //Reading video input, and flipping it on the x axis to avoid reversed video
+  
   if(videoInput.available()){
     videoInput.read();
     videoInput.loadPixels();
@@ -72,6 +84,12 @@ void draw(){
   
   else if(showImage != true){
     takePicture();
+    fill(200,0,0);
+    rect(0,0,240,100,10);
+    textSize(60);
+    fill(255);
+    text("EXIT",60,70,10);
+    
   }
   
   //Checking to see if audio level is over 99, clapRegistered it set to true after first clap to avoid double claps
@@ -83,11 +101,16 @@ void draw(){
 }
 
 //Changes position of the image(-300 because it was set to the top left) and setting the colour we are tracking to the colour of the pixel we last clicked on
+//Also exits sketch when red exit box is clicked
 void mousePressed(){
   newX = newX-300;
   newY = newY-300;
   int loc = mouseX + mouseY*videoInput.width;
   track = videoInput.pixels[loc];
+  if(mouseX > 0 && mouseX < 240 && mouseY > 10 && mouseY < 100)
+  {
+    exit();
+  }
 }
 
 void trackGreen(){
@@ -108,15 +131,15 @@ void trackGreen(){
       float d = dist(r1, g1, b1, r2, g2, b2);
       if (d < colourGap) {
         colourGap = d;
-        newX = x;
-        newY = y;
+        newX = x-width/2;
+        newY = y-height/2;
       }
     }
   }
   
   if (colourGap < 10) { 
-    xPos = newX;
-    yPos = newY;
+    xPos = newX-width/2;
+    yPos = newY-height/2;
   }
 }
  
@@ -140,6 +163,6 @@ void takePicture(){
   //Reads the screenshot from data and places it in the middle of the screen
   
   newImage.save("screenShotSaved.tif");
-  image(newImage,newX-width/2,newY-height/2);
+  image(newImage,newX,newY);
   trackGreen();
 }
