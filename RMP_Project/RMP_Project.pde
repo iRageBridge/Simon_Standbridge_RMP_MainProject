@@ -28,11 +28,9 @@ Minim minim;
 Capture videoInput;
 
 void setup(){
-  
   //Assigning values
   newX = 0;
   newY = 0;
-  
   
   showImage = true;
   clapRegistered = false;
@@ -41,7 +39,8 @@ void setup(){
   xPos=0;
   
   XML xmlDialogue;
-  //Loading text fom XML file and displaying in dialog box
+  
+  //Loading text fom XML file and displaying in dialog box when sketch begins
   xmlDialogue = loadXML ("dialogue.xml");
   XML[]dialogues = xmlDialogue.getChildren("box");
   JOptionPane.showMessageDialog(null,dialogues[0].getString("text") + "\n" + dialogues[1].getString("text") + "\n" + dialogues[2].getString("text"));
@@ -51,24 +50,19 @@ void setup(){
 
   videoInput = new Capture(this,640,480);
   videoInput.start();
-  //Reading sound input
   
+  //Reading sound input
   minim = new Minim(this);
   audioInput = minim.getLineIn();
   
   background(127);
+  
   //Loading background image (black image with oval hole)
-  
   image = loadImage("processing.png");
-  
-  
-  
 }
 
 void draw(){ 
-  
   //Reading video input, and flipping it on the x axis to avoid reversed video
-  
   if(videoInput.available()){
     videoInput.read();
     videoInput.loadPixels();
@@ -78,18 +72,19 @@ void draw(){
     popMatrix();
   }
   
+  //Display the black border only if a clap hasn't been registered
   if(showImage == true){
     image(image,0,0);
   }
   
+  //If a clap is registered, call the picture function, and draw the exit button on screen
   else if(showImage != true){
     takePicture();
     fill(200,0,0);
     rect(0,0,240,100,10);
     textSize(60);
     fill(255);
-    text("EXIT",60,70,10);
-    
+    text("EXIT",60,70);  
   }
   
   //Checking to see if audio level is over 99, clapRegistered it set to true after first clap to avoid double claps
@@ -107,8 +102,7 @@ void mousePressed(){
   newY = newY-300;
   int loc = mouseX + mouseY*videoInput.width;
   track = videoInput.pixels[loc];
-  if(mouseX > 0 && mouseX < 240 && mouseY > 10 && mouseY < 100)
-  {
+  if(mouseX > 0 && mouseX < 240 && mouseY > 10 && mouseY < 100){
     exit();
   }
 }
@@ -137,6 +131,7 @@ void trackGreen(){
     }
   }
   
+  //Sets x and y position of the image to the x and y position of the current pixel
   if (colourGap < 10) { 
     xPos = newX-width/2;
     yPos = newY-height/2;
@@ -161,7 +156,6 @@ void takePicture(){
     }
   }
   //Reads the screenshot from data and places it in the middle of the screen
-  
   newImage.save("screenShotSaved.tif");
   image(newImage,newX,newY);
   trackGreen();
