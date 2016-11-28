@@ -98,8 +98,8 @@ void trackGreen(){
   float colourGap = 10;
   
   //Checks every single pixel seqentually, gets the r,g and b values of them, seeing if they are within the acceptable range of the selected colour, and if they are setting the x and y of the image to the location of that pixel
-  for (int x = 0; x < videoInput.width; x ++ ) {
-    for (int y = 0; y < videoInput.height; y ++ ) {
+  for (int x = 0; x < videoInput.width; x ++) {
+    for (int y = 0; y < videoInput.height; y ++) {
       int loc = (videoInput.width-x-1+(y*readImage.width));
       color current = videoInput.pixels[loc];
       float r1 = red(current);
@@ -143,6 +143,6 @@ void takePicture(){
   //Reads the screenshot from data and places it in the middle of the screen
   
   newImage.save("screenShotSaved.tif");
-  image(newImage,newX-300,newY-300);
+  image(newImage,newX-width/2,newY-height/2);
   trackGreen();
 }
