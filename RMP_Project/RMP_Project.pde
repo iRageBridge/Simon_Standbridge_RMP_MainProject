@@ -37,10 +37,7 @@ void setup(){
   //Loading text fom XML file and displaying in dialog box
   xmlDialogue = loadXML ("dialogue.xml");
   XML[]dialogues = xmlDialogue.getChildren("box");
-  for(int i = 0; i < dialogues.length; i++){
-    String dialogueIntro = dialogues[i].getString("text");
-    JOptionPane.showMessageDialog(null,dialogueIntro);
-  }
+  JOptionPane.showMessageDialog(null,dialogues[0].getString("text") + "\n" + dialogues[1].getString("text") + "\n" + dialogues[2].getString("text"));
   
   frameRate(48);
   size(640,480);
