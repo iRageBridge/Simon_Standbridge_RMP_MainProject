@@ -81,10 +81,10 @@ void draw(){
   else if(showImage != true){
     takePicture();
     fill(200,0,0);
-    rect(0,0,240,100,10);
-    textSize(60);
+    rect(0,0,audioInput.right.level()*width,50,50);
+    textSize(20);
     fill(255);
-    text("EXIT",60,70);  
+    text("VOLUME",10,70);
   }
   
   //Checking to see if audio level is over 99, clapRegistered it set to true after first clap to avoid double claps
@@ -102,9 +102,6 @@ void mousePressed(){
   newY = newY-300;
   int loc = mouseX + mouseY*videoInput.width;
   track = videoInput.pixels[loc];
-  if(mouseX > 0 && mouseX < 240 && mouseY > 10 && mouseY < 100){
-    exit();
-  }
 }
 
 void trackGreen(){
