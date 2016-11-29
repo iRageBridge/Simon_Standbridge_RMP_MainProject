@@ -81,6 +81,7 @@ void draw(){
   else if(showImage != true){
     takePicture();
     fill(200,0,0);
+    //Red bar is drawn as volume bar, full width if clips, very small if very quiet.
     rect(0,0,audioInput.right.level()*width,50,50);
     textSize(20);
     fill(255);
@@ -120,6 +121,7 @@ void trackGreen(){
       float g2 = green(track);
       float b2 = blue(track);
       float d = dist(r1, g1, b1, r2, g2, b2);
+      //Checking to see if the colour is within the threshold, and if it is assigning that pixels x and y to the x and y of the new image
       if (d < colourGap) {
         colourGap = d;
         newX = x-width/2;
